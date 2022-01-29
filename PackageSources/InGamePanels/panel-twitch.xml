@@ -5,6 +5,6 @@
     url="html_ui/ingamePanels/CustomPanel/CustomPanel.html" 
     resizeDirections="Both" minWidth="33" minHeight="35" defaultWidth="36" 
     defaultHeight="36" defaultTop="33" defaultRight="2" 
-    icon="ICON_TOOLBAR" buttonVisible="true">
+    icon="ICON_TOOLBAR_TWITCH" buttonVisible="true">
   </InGamePanels.InGamePanelDefinition>
 </SimBase.Document>
