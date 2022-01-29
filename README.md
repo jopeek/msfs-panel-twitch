@@ -1,26 +1,17 @@
-# Panel Notepad
+# Panel Twitch Chat
 
-A simple notepad that appears on the toolbar / panel along the top of Microsoft
-Flight Simulator. You can type into it, but are likely to conflict with keyboard
-shortcuts. You're better off pasting text from outside the sim (i.e., do not
-bind `Ctrl+V`).
-
-*The notepad does not save text.*
+A simple web-based twitch chat viewer as a panel for use in Microsoft Flight Simulator. This is meant to make it easier to view a twitch stream's chat while flying. It is especially designed for VR users who stream and want to keep an eye on their chat, but it can also be used for streamers without multiple monitors.
 
 ## Acknowledgements
 
-Based on https://github.com/bymaximus/msfs2020-toolbar-window-template. I have
-deleted and simplified a lot of code that did not appear necessary.
+Forked from https://github.com/diagonalization-lab/msfs-panel-notepad which in turn was based on https://github.com/bymaximus/msfs2020-toolbar-window-template. 
 
 ## Prerequisites
 
 You will need the MSFS SDK.
 
-## Installation
+## Build
 
-*This assumes you have installed MSFS from the Windows Store.*
+1. Run `build.bat`. 
 
-1. Run `build.bat`. You will get an error. 
-2. Run `build.bat` again. No error!
-
-This builds the package *and* copies it to the community package folder.
+This builds the package and drops the package folder into .\Packages\panel-twitch. This is the folder that needs to be copied into the *Community* folder.

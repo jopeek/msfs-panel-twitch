@@ -14,11 +14,11 @@
     }
   ],
   "content_type": "",
-  "title": "Panel Notepad",
-  "manufacturer": "Diagonalization",
-  "creator": "Diagonalization",
+  "title": "Panel Twitch Chat",
+  "manufacturer": "Jan Ole Peek",
+  "creator": "Jan Ole Peek",
   "package_version": "1.0.0",
-  "minimum_game_version": "1.8.3",
+  "minimum_game_version": "1.21.13",
   "release_notes": {
     "neutral": {
       "LastUpdate": "",

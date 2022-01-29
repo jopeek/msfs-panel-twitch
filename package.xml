@@ -1,7 +1,7 @@
-<Project Version="2" Name="diagonalization-panel-notepad" FolderName="Packages">
+<Project Version="1" Name="panel-twitch" FolderName="Packages">
 	<OutputDirectory>.</OutputDirectory>
 	<TemporaryOutputDirectory>_Temp</TemporaryOutputDirectory>
 	<Packages>
-		<Package>PackageDefinitions\diagonalization-panel-notepad.xml</Package>
+		<Package>PackageDefinitions\panel-twitch.xml</Package>
 	</Packages>
 </Project>

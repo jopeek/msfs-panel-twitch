@@ -1,16 +1,16 @@
-<AssetPackage Name="diagonalization-panel-notepad" Version="1.0.0">
+<AssetPackage Name="panel-twitch" Version="1.0.0">
 	<ItemSettings>
 		<ContentType>SPB</ContentType>
-		<Title>diagonalization-panel-notepad</Title>
-		<Manufacturer>Diagonalization</Manufacturer>
-		<Creator>Diagonalization</Creator>
+		<Title>panel-twitch</Title>
+		<Manufacturer>Jan Ole Peek</Manufacturer>
+		<Creator>Jan Ole Peek</Creator>
 	</ItemSettings>
 	<Flags>
 		<VisibleInStore>false</VisibleInStore>
 		<CanBeReferenced>false</CanBeReferenced>
 	</Flags>
 	<AssetGroups>
-		<AssetGroup Name="diagonalization-panel-notepad">
+		<AssetGroup Name="panel-twitch">
 			<Type>SPB</Type>
 			<Flags>
 				<FSXCompatibility>false</FSXCompatibility>
