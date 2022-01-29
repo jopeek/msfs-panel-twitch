@@ -6,12 +6,16 @@ A simple web-based twitch chat viewer as a panel for use in Microsoft Flight Sim
 
 Forked from https://github.com/diagonalization-lab/msfs-panel-notepad which in turn was based on https://github.com/bymaximus/msfs2020-toolbar-window-template. 
 
-## Prerequisites
+## Tested with
 
-You will need the MSFS SDK.
+- SDK version: 0.16.0.0 
+- MSFS version: 1.21.18.0 (Sim Update 7)
 
 ## Build
+
+You will need the MSFS SDK. Download from in-game: Options > General Options > Developers > Developer Mode: ON, then access the DevMode toolbar > Help > SDK Installer (Core)
 
 1. Run `build.bat`. 
 
 This builds the package and drops the package folder into .\Packages\panel-twitch. This is the folder that needs to be copied into the *Community* folder.
+Optionally, run `build.bat /c` to have the output package automatically copied to the *Community* folder for the Microsoft Store version of MSFS.
