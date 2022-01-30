@@ -21,16 +21,20 @@
     <link rel="import" href="/templates/NewListButton/NewListButton.html" />
 
     <script type="text/javascript" src="/JS/debug.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script src="tmi.min.js"></script>
     <script type="text/javascript" src="TwitchChatPanel.js"></script>
 </head>
 
 <body class="border-box">
     <ingamepanel-custom>
-        <ingame-ui id="TwitchChatPanel" panel-id="PANEL_CUSTOM_PANEL" title="" class="ingameUiFrame panelInvisible"
-            content-fit="true" min-width="160" min-height="90">
-            <iframe id="twitch-chat-embed" src="https://www.twitch.tv/embed/twitchdev/chat?parent=localhost"
-                height="500" width="350">
-            </iframe>
+        <ingame-ui id="TwitchChatPanel" panel-id="PANEL_TWITCH_CHAT_PANEL" title="" class="ingameUiFrame panelInvisible" content-fit="true" min-width="160" min-height="90">
+            
+            <ul id="TwitchChatPanelList">
+
+            </ul>
 
         </ingame-ui>
     </ingamepanel-custom>

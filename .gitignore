@@ -1,3 +1,5 @@
 /Packages
 /html_ui
 /_Temp
+/PackageSources/html_ui/InGamePanels/TwitchChatPanel/node_modules
+.DS_Store
