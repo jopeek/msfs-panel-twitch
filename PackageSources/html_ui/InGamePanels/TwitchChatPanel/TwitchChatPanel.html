@@ -1,9 +1,10 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="/SCSS/common.css" />
-    <link rel="stylesheet" href="CustomPanel.css" />
+    <link rel="stylesheet" href="TwitchChatPanel.css" />
 
     <script type="text/javascript" src="/JS/coherent.js"></script>
     <script type="text/javascript" src="/JS/common.js"></script>
@@ -20,27 +21,19 @@
     <link rel="import" href="/templates/NewListButton/NewListButton.html" />
 
     <script type="text/javascript" src="/JS/debug.js"></script>
-    <script type="text/javascript" src="CustomPanel.js"></script>
+    <script type="text/javascript" src="TwitchChatPanel.js"></script>
 </head>
 
 <body class="border-box">
     <ingamepanel-custom>
-        <ingame-ui id="CustomPanel" panel-id="PANEL_CUSTOM_PANEL" title="" class="ingameUiFrame panelInvisible" content-fit="true" min-width="160" min-height="90">
-            <div style="background-color: var(--backgroundColorPanel);">
-                <new-push-button id="lockBuffer" class="small" title="Lock Notepad"></new-push-button>
-            </div>
-            <div id="CustomPanelWrap">
-                <textarea
-                  id="textBuffer"
-                  style="background-color: var(--backgroundColorPanel); font-family: RobotoMono-Light; font-size: var(--fontSizeParagraph); width: 100%; height: 100%; color: var(--textColor)"></textarea>
-            </div>
-            <section id="MainDisplay">
-                header
-            </section>
-            <section id="Footer">
-                footer
-            </section>
+        <ingame-ui id="TwitchChatPanel" panel-id="PANEL_CUSTOM_PANEL" title="" class="ingameUiFrame panelInvisible"
+            content-fit="true" min-width="160" min-height="90">
+            <iframe id="twitch-chat-embed" src="https://www.twitch.tv/embed/twitchdev/chat?parent=localhost"
+                height="500" width="350">
+            </iframe>
+
         </ingame-ui>
     </ingamepanel-custom>
 </body>
+
 </html>

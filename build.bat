@@ -1,4 +1,5 @@
 @ECHO OFF
+rmdir /S /Q .\Packages
 "%MSFS_SDK%\Tools\bin\fspackagetool.exe" package.xml
 IF "%1"=="/c" GOTO Copy
 GOTO Exit

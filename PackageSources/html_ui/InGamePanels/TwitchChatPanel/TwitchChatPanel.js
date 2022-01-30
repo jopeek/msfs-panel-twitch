@@ -1,4 +1,4 @@
-class IngamePanelCustomPanel extends TemplateElement {
+class IngamePanelTwitchChatPanel extends TemplateElement {
     constructor() {
         super(...arguments);
     }
@@ -28,5 +28,5 @@ class IngamePanelCustomPanel extends TemplateElement {
     updateImage() {
     }
 }
-window.customElements.define("ingamepanel-custom", IngamePanelCustomPanel);
+window.customElements.define("ingamepanel-custom", IngamePanelTwitchChatPanel);
 checkAutoload();
