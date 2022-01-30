@@ -7,6 +7,10 @@ ingame-ui#TwitchChatPanel {
   font-family: 'Roboto';
 }
 
+ingame-ui#TwitchChatPanel label {
+  margin-left: 1rem;
+}
+
 ingame-ui#TwitchChatPanel img.emoticon {
   max-width: 2rem;
   max-height: 2rem;
@@ -21,7 +25,8 @@ ingame-ui#TwitchChatPanel img.mod {
 
 ingame-ui#TwitchChatPanel #TwitchChatPanelList {
   list-style-type: none;
-  padding-left: 0;
+  padding-left: 1rem;
+  
 }
 
 ingame-ui#TwitchChatPanel #TwitchChatPanelList li {
