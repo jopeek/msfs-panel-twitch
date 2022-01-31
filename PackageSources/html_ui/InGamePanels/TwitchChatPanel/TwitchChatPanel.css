@@ -17,8 +17,7 @@ ingame-ui#TwitchChatPanel img.emoticon {
   vertical-align: middle;
 }
 
-ingame-ui#TwitchChatPanel img.premium,
-ingame-ui#TwitchChatPanel img.mod {
+ingame-ui#TwitchChatPanel img.badge {
   margin-right: 3px;
   vertical-align: middle; 
 }

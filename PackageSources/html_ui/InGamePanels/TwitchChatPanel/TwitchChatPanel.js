@@ -43,15 +43,21 @@ function formatEmotes(text, emotes) {
 function formatBadges(badges) {
     if (badges === null) return "";
 
-    if (badges['premium'] !== null) {
-        if (badges['premium'] === "1") return '<img class="premium" src="https://static-cdn.jtvnw.net/badges/v1/bbbe0db0-a598-423e-86d0-f9fb98ca1933/1">';
+    var output = "";
+
+    if (badges['broadcaster'] !== null) {
+        if (badges['broadcaster'] === "1") output += '<img class="badge mod" src="https://static-cdn.jtvnw.net/badges/v1/5527c58c-fb7d-422d-b71b-f309dcb85cc1/1">';
     }
 
     if (badges['moderator'] !== null) {
-        if (badges['moderator'] === "1") return '<img class="mod" src="https://static-cdn.jtvnw.net/badges/v1/3267646d-33f0-4b17-b3df-f923a41db1d0/1">';
+        if (badges['moderator'] === "1") output += '<img class="badge mod" src="https://static-cdn.jtvnw.net/badges/v1/3267646d-33f0-4b17-b3df-f923a41db1d0/1">';
     }
 
-    return "";
+    if (badges['premium'] !== null) {
+        if (badges['premium'] === "1") output += '<img class="badge premium" src="https://static-cdn.jtvnw.net/badges/v1/bbbe0db0-a598-423e-86d0-f9fb98ca1933/1">';
+    }
+
+    return output;
 }
 
 $(function () {
@@ -99,7 +105,7 @@ $(function () {
     
     
     client.on('message', (channel, tags, message, self) => {
-        //console.log(tags);
+        console.log(tags);
 
         $('#TwitchChatPanelList').prepend(`<li><span style="font-weight: bold; color: ${tags['color']};">` + formatBadges(tags['badges']) + `${tags['display-name']}</span>: ` + formatEmotes(message, tags['emotes']) + '</li>');
 
