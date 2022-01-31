@@ -6,6 +6,8 @@ A simple web-based twitch chat viewer as a panel for use in Microsoft Flight Sim
 
 Forked from https://github.com/diagonalization-lab/msfs-panel-notepad which in turn was based on https://github.com/bymaximus/msfs2020-toolbar-window-template. 
 
+Tmi.js code from https://codepen.io/gylidian/pen/NWWzGGg with some modifications here and there.
+
 ## Tested with
 
 - SDK version: 0.16.0.0 

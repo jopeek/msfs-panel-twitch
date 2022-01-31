@@ -11,7 +11,8 @@ ingame-ui#TwitchChatPanel label {
   margin-left: 1rem;
 }
 
-ingame-ui#TwitchChatPanel img.emoticon {
+ingame-ui#TwitchChatPanel img.emoticon,
+.chat-line img {
   max-width: 2rem;
   max-height: 2rem;
   vertical-align: middle;
@@ -28,7 +29,8 @@ ingame-ui#TwitchChatPanel #TwitchChatPanelList {
   
 }
 
-ingame-ui#TwitchChatPanel #TwitchChatPanelList li {
+ingame-ui#TwitchChatPanel #TwitchChatPanelList li,
+.chat-line {
   line-height: 2rem;
   margin-left: 0;
 }

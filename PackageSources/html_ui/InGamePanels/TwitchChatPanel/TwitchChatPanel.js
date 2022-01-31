@@ -1,118 +1,488 @@
-// class IngamePanelTwitchChatPanel extends TemplateElement {
-//     constructor() {
-//         super(...arguments);
-//     }
-//     connectedCallback() {
-//         super.connectedCallback();
-//         // js code goes here
+/* Helpful information:
+
+Clips
+	Endpoint: https://api.twitch.tv/kraken/clips/ReliableSplendidInternPogChamp?on_site=1&api_version=5
+	Exmpample Clip: https://clips.twitch.tv/ReliableSplendidInternPogChamp
+	Missing thumbnail: https://clips-media-assets.twitch.tv/404-preview-86x45.jpg
+	Broken thumbnail: https://clips-media-assets.twitch.tv/vod-153090723-offset-1928.5-60-preview-1920x1080.jpg
+
+*/
+
+// User Configurations
+const channelName = "Gladd";
+const maxChatLines = 20;
+let testing = false;
+
+/*
+
+    DO NOT EDIT BELOW
+*/
+
+const chatEle = document.getElementById('chat');
+const toggleConnection = document.getElementById("toggleConnection");
+
+const twitchBadgeCache = {
+  data: { global: {} } };
+
+const bttvEmoteCache = {
+  lastUpdated: 0,
+  data: { global: [] },
+  urlTemplate: '//cdn.betterttv.net/emote/{{id}}/{{image}}' };
 
 
-//     }
-//     initialize() {
-//     }
-//     disconnectedCallback() {
-//         super.disconnectedCallback();
-//     }
-//     updateImage() {
-//     }
-// }
-// window.customElements.define("ingamepanel-custom", IngamePanelTwitchChatPanel);
-// checkAutoload();
+const krakenBase = 'https://api.twitch.tv/kraken/';
+const krakenClientID = '4g5an0yjebpf93392k4c5zll7d7xcec';
 
-function formatEmotes(text, emotes) {
-    var splitText = text.split('');
-    for (var i in emotes) {
-        var e = emotes[i];
-        for (var j in e) {
-            var mote = e[j];
-            if (typeof mote == 'string') {
-                mote = mote.split('-');
-                mote = [parseInt(mote[0]), parseInt(mote[1])];
-                var length = mote[1] - mote[0],
-                    empty = Array.apply(null, new Array(length + 1)).map(function () {
-                        return ''
-                    });
-                splitText = splitText.slice(0, mote[0]).concat(empty).concat(splitText.slice(mote[1] + 1, splitText.length));
-                splitText.splice(mote[0], 1, '<img class="emoticon" src="http://static-cdn.jtvnw.net/emoticons/v1/' + i + '/3.0">');
-            }
-        }
-    }
-    return splitText.join('');
-}
+const chatFilters = [
+// '\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF', // Partial Latin-1 Supplement
+// '\u0100-\u017F', // Latin Extended-A
+// '\u0180-\u024F', // Latin Extended-B
+'\u0250-\u02AF', // IPA Extensions
+'\u02B0-\u02FF', // Spacing Modifier Letters
+'\u0300-\u036F', // Combining Diacritical Marks
+'\u0370-\u03FF', // Greek and Coptic
+'\u0400-\u04FF', // Cyrillic
+'\u0500-\u052F', // Cyrillic Supplement
+'\u0530-\u1FFF', // Bunch of non-English
+'\u2100-\u214F', // Letter Like
+'\u2500-\u257F', // Box Drawing
+'\u2580-\u259F', // Block Elements
+'\u25A0-\u25FF', // Geometric Shapes
+'\u2600-\u26FF', // Miscellaneous Symbols
+// '\u2700-\u27BF', // Dingbats
+'\u2800-\u28FF' // Braille
+// '\u2C60-\u2C7F', // Latin Extended-C
+];
+const chatFilter = new RegExp(`[${chatFilters.join('')}]`);
 
-function formatBadges(badges) {
-    if (badges === null) return "";
+let client;
 
-    var output = "";
+if (testing) {
+  kraken({
+    endpoint: 'streams',
+    qs: {
+      limit: 10,
+      language: 'en' } }).
 
-    if (badges['broadcaster'] !== null) {
-        if (badges['broadcaster'] === "1") output += '<img class="badge mod" src="https://static-cdn.jtvnw.net/badges/v1/5527c58c-fb7d-422d-b71b-f309dcb85cc1/1">';
-    }
 
-    if (badges['moderator'] !== null) {
-        if (badges['moderator'] === "1") output += '<img class="badge mod" src="https://static-cdn.jtvnw.net/badges/v1/3267646d-33f0-4b17-b3df-f923a41db1d0/1">';
-    }
+  then(({ streams }) => {
+    client = new tmi.client({
+      // options: { debug: true },
+      connection: {
+        reconnect: true,
+        secure: true },
 
-    if (badges['premium'] !== null) {
-        if (badges['premium'] === "1") output += '<img class="badge premium" src="https://static-cdn.jtvnw.net/badges/v1/bbbe0db0-a598-423e-86d0-f9fb98ca1933/1">';
-    }
+      // channels: [ 'alca' ],
+      channels: streams.map(n => n.channel.name) });
 
-    return output;
-}
+    addListeners();
+    client.connect();
+  });
+} else
+{
+  client = new tmi.client({
+    // options: { debug: true },
+    connection: {
+      reconnect: true,
+      secure: true },
 
-$(function () {
-    console.log("ready!");
+    channels: [channelName] });
 
-    // UPDATE THE CHANNEL NAME BELOW
-    const channelName = "CHALKONEPLAYS";
-
-    const toggleConnection = document.getElementById("toggleConnection");
-
-    const client = new tmi.Client({
-        options: {
-            debug: true,
-            messagesLogLevel: "info"
-        },
-        connection: {
-            reconnect: true,
-            secure: true
-        },
-        // identity: {
-        // 	username: 'bot-name',
-        // 	password: 'oauth:my-bot-token'
-        // },
-        channels: [channelName]
-    });
-
-    var connectionStatus = 0;
+  addListeners();
+  
+  var connectionStatus = 0;
 
     toggleConnection.addEventListener("click", () => {
         
         if (connectionStatus === 0) {
             client.connect().catch(console.error);
             connectionStatus = 1;
-            $('#TwitchChatPanelList').prepend(`<li>--- CONNECTED TO ${channelName} ---</li>`);
             $('#toggleConnection').attr('title', 'Disconnect');
         } else {
             client.disconnect().catch(console.error);
             connectionStatus = 0;
-            $('#TwitchChatPanelList').prepend(`<li>--- DISCONNECTED FROM ${channelName} ---</li>`);
             $('#toggleConnection').attr('title', 'Connect');
         }
 
     });
+}
 
-    
-    
-    client.on('message', (channel, tags, message, self) => {
-        console.log(tags);
+function addListeners() {
+  client.on('connecting', () => {
+    showAdminMessage({
+      message: 'Connecting...',
+      attribs: { subtype: 'connecting' } });
 
-        $('#TwitchChatPanelList').prepend(`<li><span style="font-weight: bold; color: ${tags['color']};">` + formatBadges(tags['badges']) + `${tags['display-name']}</span>: ` + formatEmotes(message, tags['emotes']) + '</li>');
+    removeAdminChatLine({ subtype: 'disconnected' });
+  });
 
-        $('#TwitchChatPanelList li:gt(25)').remove();
+  client.on('connected', () => {
+    //getBTTVEmotes();
+    getBadges().
+    then(badges => twitchBadgeCache.data.global = badges);
+    showAdminMessage({
+      message: 'Connected...',
+      attribs: { subtype: 'connected' },
+      timeout: 5000 });
 
+    removeAdminChatLine({ subtype: 'connecting' });
+    removeAdminChatLine({ subtype: 'disconnected' });
+  });
+
+  client.on('disconnected', () => {
+    twitchBadgeCache.data = { global: {} };
+    bttvEmoteCache.data = { global: [] };
+    showAdminMessage({
+      message: 'Disconnected...',
+      attribs: { subtype: 'disconnected' } });
+
+    removeAdminChatLine({ subtype: 'connecting' });
+    removeAdminChatLine({ subtype: 'connected' });
+  });
+
+  function handleMessage(channel, userstate, message, fromSelf) {
+
+    if (chatFilter.test(message)) {
+      testing && console.log(message) && console.log(userstate);
+      return;
+    }
+
+    let chan = getChan(channel);
+    let name = userstate['display-name'] || userstate.username;
+    if (/[^\w]/g.test(name)) {
+      name += ` (${userstate.username})`;
+    }
+    userstate.name = name;
+    showMessage({ chan, type: 'chat', message, data: userstate });
+  }
+
+  client.on('message', handleMessage);
+  client.on('cheer', handleMessage);
+
+  client.on('join', (channel, username, self) => {
+    if (!self) {
+      return;
+    }
+    let chan = getChan(channel);
+    //getBTTVEmotes(chan);
+    twitchNameToUser(chan).
+    then(user => getBadges(user._id)).
+    then(badges => twitchBadgeCache.data[chan] = badges);
+    showAdminMessage({
+      message: `Joined ${chan}`,
+      timeout: 1000 });
+
+  });
+
+  client.on('part', (channel, username, self) => {
+    if (!self) {
+      return;
+    }
+    let chan = getChan(channel);
+    delete bttvEmoteCache.data[chan];
+    showAdminMessage({
+      message: `Parted ${chan}`,
+      timeout: 1000 });
+
+  });
+
+  client.on('clearchat', channel => {
+    removeChatLine({ channel });
+  });
+
+  client.on('timeout', (channel, username) => {
+    removeChatLine({ channel, username });
+  });
+}
+
+function removeChatLine(params = {}) {
+  if ('channel' in params) {
+    params.channel = getChan(params.channel);
+  }
+  let search = Object.keys(params).
+  map(key => `[${key}="${params[key]}"]`).
+  join('');
+  chatEle.querySelectorAll(search).
+  forEach(n => chatEle.removeChild(n));
+}
+
+function removeAdminChatLine(params = {}) {
+  params.type = 'admin';
+  removeChatLine(params);
+}
+
+function showAdminMessage(opts) {
+  opts.type = 'admin';
+  if ('attribs' in opts === false) {
+    opts.attribs = {};
+  }
+  opts.attribs.type = 'admin';
+  return showMessage(opts);
+}
+
+function getChan(channel = '') {
+  return channel.replace(/^#/, '');
+}
+
+function showMessage({ chan, type, message = '', data = {}, timeout = 0, attribs = {} } = {}) {
+  let chatLine_ = document.createElement('div');
+  let chatLine = document.createElement('div');
+  chatLine_.classList.add('chat-line');
+  chatLine.classList.add('chat-line-inner');
+  chatLine_.appendChild(chatLine);
+
+  if (chan) {
+    chatLine_.setAttribute('channel', chan);
+  }
+
+  Object.keys(attribs).
+  forEach(key => {
+    chatLine_.setAttribute(key, attribs[key]);
+  });
+
+  if (type === 'chat') {
+    'id' in data && chatLine_.setAttribute('message-id', data.id);
+    'user-id' in data && chatLine_.setAttribute('user-id', data['user-id']);
+    'room-id' in data && chatLine_.setAttribute('channel-id', data['room-id']);
+    'username' in data && chatLine_.setAttribute('username', data.username);
+
+    let spaceEle = document.createElement('span');
+    spaceEle.innerText = ' ';
+    let badgeEle = document.createElement('span');
+    if ('badges' in data && data.badges !== null) {
+      badgeEle.classList.add('badges');
+      let badgeGroup = Object.assign({}, twitchBadgeCache.data.global, twitchBadgeCache.data[chan] || {});
+      let badges = Object.keys(data.badges).
+      forEach(type => {
+        let version = data.badges[type];
+        let group = badgeGroup[type];
+        if (group && version in group.versions) {
+          let url = group.versions[version].image_url_1x;
+          let ele = document.createElement('img');
+          ele.setAttribute('src', url);
+          ele.setAttribute('badgeType', type);
+          ele.setAttribute('alt', type);
+          ele.classList.add('badge');
+          badgeEle.appendChild(ele);
+        }
+      }, []);
+    }
+
+    let nameEle = document.createElement('span');
+    nameEle.classList.add('user-name');
+    nameEle.style.cssText = `font-weight: bold; color: ${data.color}`;
+    nameEle.innerText = data.name;
+
+    let colonEle = document.createElement('span');
+    colonEle.classList.add('message-colon');
+    colonEle.innerText = ': ';
+
+    let messageEle = document.createElement('span');
+    messageEle.classList.add('message');
+
+    let finalMessage = handleEmotes(chan, data.emotes || {}, message);
+    addEmoteDOM(messageEle, finalMessage);
+
+    chatLine.appendChild(badgeEle);
+    chatLine.appendChild(spaceEle);
+    chatLine.appendChild(nameEle);
+    chatLine.appendChild(colonEle);
+    chatLine.appendChild(messageEle);
+  } else
+  if (type === 'admin') {
+    chatLine_.classList.add('admin');
+
+    let messageEle = document.createElement('span');
+    messageEle.classList.add('message');
+    messageEle.innerText = message;
+
+    chatLine.appendChild(messageEle);
+  }
+
+  chatEle.appendChild(chatLine_);
+
+  setTimeout(() => chatLine_.classList.add('visible'), 100);
+
+  if (chatEle.childElementCount > maxChatLines) {
+    chatEle.removeChild(chatEle.children[0]);
+  }
+
+  if (timeout) {
+    setTimeout(() => {
+      if (chatLine_.parentElement) {
+        chatLine_.classList.remove('visible');
+        setTimeout(() => chatEle.removeChild(chatLine_), 1000);
+      }
+    }, timeout);
+  }
+}
+
+function handleEmotes(channel, emotes, message) {
+  // let messageParts = message.split(' ');
+  let bttvEmotes = bttvEmoteCache.data.global.slice(0);
+  if (channel in bttvEmoteCache.data) {
+    bttvEmotes = bttvEmotes.concat(bttvEmoteCache.data[channel]);
+  }
+  let twitchEmoteKeys = Object.keys(emotes);
+  let allEmotes = twitchEmoteKeys.reduce((p, id) => {
+    let emoteData = emotes[id].map(n => {
+      let [a, b] = n.split('-');
+      let start = +a;
+      let end = +b + 1;
+      return {
+        start,
+        end,
+        id,
+        code: message.slice(start, end),
+        type: ['twitch', 'emote'] };
 
     });
+    return p.concat(emoteData);
+  }, []);
+  bttvEmotes.forEach(({ code, id, type, imageType }) => {
+    let hasEmote = message.indexOf(code);
+    if (hasEmote === -1) {
+      return;
+    }
+    for (let start = message.indexOf(code); start > -1; start = message.indexOf(code, start + 1)) {
+      let end = start + code.length;
+      allEmotes.push({ start, end, id, code, type });
+    }
+  });
+  let seen = [];
+  allEmotes = allEmotes.sort((a, b) => a.start - b.start).
+  filter(({ start, end }) => {
+    if (seen.length && !seen.every(n => start > n.end)) {
+      return false;
+    }
+    seen.push({ start, end });
+    return true;
+  });
+  if (allEmotes.length) {
+    let finalMessage = [message.slice(0, allEmotes[0].start)];
+    allEmotes.forEach((n, i) => {
+      let p = Object.assign({}, n, { i });
+      let { end } = p;
+      finalMessage.push(p);
+      if (i === allEmotes.length - 1) {
+        finalMessage.push(message.slice(end));
+      } else
+      {
+        finalMessage.push(message.slice(end, allEmotes[i + 1].start));
+      }
+      finalMessage = finalMessage.filter(n => n);
+    });
+    return finalMessage;
+  }
+  return [message];
+}
+
+function addEmoteDOM(ele, data) {
+  data.forEach(n => {
+    let out = null;
+    if (typeof n === 'string') {
+      out = document.createTextNode(n);
+    } else
+    {
+      let { type: [type, subtype], code } = n;
+      if (type === 'twitch') {
+        if (subtype === 'emote') {
+          out = document.createElement('img');
+          out.setAttribute('src', `https://static-cdn.jtvnw.net/emoticons/v1/${n.id}/1.0`);
+          out.setAttribute('alt', code);
+          out.setAttribute('class', 'emote');
+        }
+      } else
+      if (type === 'bttv') {
+        out = document.createElement('img');
+        let url = bttvEmoteCache.urlTemplate;
+        url = url.replace('{{id}}', n.id).replace('{{image}}', '1x');
+        out.setAttribute('src', 'https:' + url);
+      }
+    }
+
+    if (out) {
+      ele.appendChild(out);
+    }
+  });
+  twemoji.parse(ele);
+}
+
+function formQuerystring(qs = {}) {
+  return Object.keys(qs).
+  map(key => `${key}=${qs[key]}`).
+  join('&');
+}
+
+function request({ base = '', endpoint = '', qs, headers = {}, method = 'get' }) {
+  let opts = {
+    method,
+    headers: new Headers(headers) };
+
+  return fetch(base + endpoint + '?' + formQuerystring(qs), opts).
+  then(res => res.json());
+}
+
+function kraken(opts) {
+  let defaults = {
+    base: krakenBase,
+    headers: {
+      'Client-ID': krakenClientID,
+      Accept: 'application/vnd.twitchtv.v5+json' } };
 
 
-});
+  return request(Object.assign(defaults, opts));
+}
+
+function twitchNameToUser(username) {
+  return kraken({
+    endpoint: 'users',
+    qs: { login: username } }).
+
+  then(({ users }) => users[0] || null);
+}
+
+function getBadges(channel) {
+  return kraken({
+    base: 'https://badges.twitch.tv/v1/badges/',
+    endpoint: (channel ? `channels/${channel}` : 'global') + '/display',
+    qs: { language: 'en' } }).
+
+  then(data => data.badge_sets);
+}
+
+function getClip(clipSlug) {
+  return kraken({
+    endpoint: `clips/${clipSlug}` });
+
+}
+
+// function getBTTVEmotes(channel) {
+//   let endpoint = 'emotes';
+//   let global = true;
+//   if (channel) {
+//     endpoint = 'channels/' + channel;
+//     global = false;
+//   }
+//   return request({
+//     base: 'https://api.betterttv.net/2/',
+//     endpoint }).
+
+//   then(({ emotes, status, urlTemplate }) => {
+//     if (status === 404) return;
+//     bttvEmoteCache.urlTemplate = urlTemplate;
+//     emotes.forEach(n => {
+//       n.global = global;
+//       n.type = ['bttv', 'emote'];
+//       if (!global) {
+//         if (channel in bttvEmoteCache.data === false) {
+//           bttvEmoteCache.data[channel] = [];
+//         }
+//         bttvEmoteCache.data[channel].push(n);
+//       } else
+//       {
+//         bttvEmoteCache.data.global.push(n);
+//       }
+//     });
+//   });
+// }

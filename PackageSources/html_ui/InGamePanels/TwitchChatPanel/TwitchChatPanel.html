@@ -21,26 +21,25 @@
     <link rel="import" href="/templates/NewListButton/NewListButton.html" />
 
     <script type="text/javascript" src="/JS/debug.js"></script>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-
-    <script src="tmi.min.js"></script>
-    <script type="text/javascript" src="TwitchChatPanel.js"></script>
 </head>
 
 <body class="border-box">
     <ingamepanel-custom>
-        <ingame-ui id="TwitchChatPanel" panel-id="PANEL_TWITCH_CHAT_PANEL" title="" class="ingameUiFrame panelInvisible" content-fit="true" min-width="200" min-height="100">
+        <ingame-ui id="TwitchChatPanel" panel-id="PANEL_TWITCH_CHAT_PANEL" title="" class="ingameUiFrame panelInvisible"
+            content-fit="true" min-width="200" min-height="100">
             <div style="background-color: var(--backgroundColorPanel); padding: 1rem; max-height: fit-content;">
                 <!-- <new-push-button id="toggleConnection" class="small" title="Connect"></new-push-button> -->
                 <button id="toggleConnection" class="small" title="Start Chat">Toggle Connection</button>
             </div>
-            <ul id="TwitchChatPanelList">
+            <div id="chat"></div>
 
-            </ul>
 
         </ingame-ui>
     </ingamepanel-custom>
+
+    <script src='./tmi.min.js'></script>
+    <script src='https://twemoji.maxcdn.com/2/twemoji.min.js?2.3.0'></script>
+    <script src="./TwitchChatPanel.js"></script>
 </body>
 
 </html>
