@@ -11,9 +11,19 @@ Tmi.js code from https://codepen.io/gylidian/pen/NWWzGGg with some modifications
 ## Tested with
 
 - SDK version: 0.16.0.0 
-- MSFS version: 1.21.18.0 (Sim Update 7)
+- MSFS version: 1.21.18.0 (Sim Update 7 and World Update 7)
 
-## Build
+## Installation
+
+Download the latest release .zip file and extract it to your *Community* folder. 
+
+## Configuration
+
+Navigate into the *Community* folder\panel-twitch\html_ui\InGamePanels\TwitchChatPanel and edit TwitchChatPanel.js
+
+Near the top of the file, set the channel name you want to connect to and the number of message lines to display.
+
+## Build from Source (not necessary to use)
 
 You will need the MSFS SDK. Download from in-game: Options > General Options > Developers > Developer Mode: ON, then access the DevMode toolbar > Help > SDK Installer (Core)
 
