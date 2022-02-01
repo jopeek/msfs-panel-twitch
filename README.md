@@ -11,7 +11,7 @@ Tmi.js code from https://codepen.io/gylidian/pen/NWWzGGg with some modifications
 ## Tested with
 
 - SDK version: 0.16.0.0 
-- MSFS version: 1.21.18.0 (Sim Update 7 and World Update 7)
+- MSFS version: 1.22.2.0 (World Update 7)
 
 ## Installation
 
