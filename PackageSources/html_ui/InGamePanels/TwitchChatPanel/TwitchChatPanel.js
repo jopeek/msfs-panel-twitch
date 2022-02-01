@@ -9,8 +9,8 @@ Clips
 */
 
 // User Configurations
-const channelName = "Gladd";
-const maxChatLines = 20;
+const channelName = "chalkoneplays";
+const maxChatLines = 10;
 let testing = false;
 
 /*
@@ -97,11 +97,13 @@ if (testing) {
         if (connectionStatus === 0) {
             client.connect().catch(console.error);
             connectionStatus = 1;
-            $('#toggleConnection').attr('title', 'Disconnect');
+            toggleConnection.setAttribute('title', 'Disconnect');
+            //toggleConnection.innerHTML = "Disconnect";
         } else {
             client.disconnect().catch(console.error);
             connectionStatus = 0;
-            $('#toggleConnection').attr('title', 'Connect');
+            toggleConnection.setAttribute('title', 'Connect');
+            //toggleConnection.innerHTML = "Connect";
         }
 
     });
@@ -299,12 +301,12 @@ function showMessage({ chan, type, message = '', data = {}, timeout = 0, attribs
     chatLine.appendChild(messageEle);
   }
 
-  chatEle.appendChild(chatLine_);
+  chatEle.prepend(chatLine_);
 
   setTimeout(() => chatLine_.classList.add('visible'), 100);
 
   if (chatEle.childElementCount > maxChatLines) {
-    chatEle.removeChild(chatEle.children[0]);
+    chatEle.removeChild(chatEle.children[maxChatLines]);
   }
 
   if (timeout) {
